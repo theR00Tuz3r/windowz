@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Windows XP</title>
+<title>Windowz XP</title>
 <link rel="icon" href="logo.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
@@ -152,9 +152,9 @@ body.miku .win.act .tbar{background:linear-gradient(#2fb5ab,#6fe3da 10%,#2fb5ab 
   <div id="tasks"></div>
   <div id="tray"><span>🔊</span><span id="clock"></span></div>
 </div>
-<div id="boot"><div class="xp"><img src="logo.png" alt="Windows XP" onerror="this.parentNode.innerHTML='Windows<sup>xp</sup>'"></div><small>Microsoft Windows XP Professional</small><div class="pb"><i></i></div></div>
-<div id="login"><div class="lt"><div class="lg"><img src="logo.png" alt="Windows XP" onerror="this.parentNode.innerHTML='Windows<sup>xp</sup>'"></div><p>To begin, click your user name</p></div><div class="lm" id="users"></div><div id="wl"></div><div class="lb"><span id="lsh">⏻ Turn off computer</span><span>After you log on, you can add or change accounts.</span></div></div>
-<div id="bsod">A problem has been detected and Windows has been shut down to prevent damage
+<div id="boot"><div class="xp"><img src="logo.png" alt="Windowz XP" onerror="this.parentNode.innerHTML='Windowz<sup>xp</sup>'"></div><small>Microsoft Windowz XP Professional</small><div class="pb"><i></i></div></div>
+<div id="login"><div class="lt"><div class="lg"><img src="logo.png" alt="Windowz XP" onerror="this.parentNode.innerHTML='Windowz<sup>xp</sup>'"></div><p>To begin, click your user name</p></div><div class="lm" id="users"></div><div id="wl"></div><div class="lb"><span id="lsh">⏻ Turn off computer</span><span>After you log on, you can add or change accounts.</span></div></div>
+<div id="bsod">A problem has been detected and Windowz has been shut down to prevent damage
 to your computer.
 
 USER_TYPED_A_SECRET_COMMAND
@@ -166,7 +166,7 @@ restart your computer.
 
 Click anywhere to restart.</div>
 <div id="bal"></div>
-<div id="off"><div id="offmsg">Windows is shutting down...</div><small>Click anywhere to start again</small></div>
+<div id="off"><div id="offmsg">Windowz is shutting down...</div><small>Click anywhere to start again</small></div>
 
 <script>
 const $=s=>document.querySelector(s);
@@ -177,10 +177,10 @@ const APPS={
   paint:{t:'untitled - Paint',i:'🎨',w:560,h:400},
   mine:{t:'Minesweeper',i:'💣',w:268,h:358},
   cmd:{t:'Command Prompt',i:'⬛',w:560,h:340},
-  taskmgr:{t:'Windows Task Manager',i:'📊',w:360,h:380},
+  taskmgr:{t:'Windowz Task Manager',i:'📊',w:360,h:380},
   ie:{t:'Internet Explorer',i:'🌐',w:640,h:440},
   display:{t:'Display Properties',i:'⚙️',w:340,h:230},
-  about:{t:'About Windows',i:'🪟',w:340,h:190}
+  about:{t:'About Windowz',i:'🪟',w:340,h:190}
 };
 const wins={};let z=10,n=0;
 
@@ -208,13 +208,13 @@ $('#desk').addEventListener('mousedown',e=>{const d=e.target.closest('.ico');if(
   document.addEventListener('mousemove',m);document.addEventListener('mouseup',u)});
 $('#sml').innerHTML=['ie','cmd','notepad','calc','paint','mine','taskmgr'].map(k=>`<div class="it" data-app="${k}"><b>${APPS[k].i}</b>${APPS[k].t.replace('Untitled - ','')}</div>`).join('');
 $('#desk').onclick=e=>{document.querySelectorAll('.ico').forEach(x=>x.classList.remove('sel'));const i=e.target.closest('.ico');if(i)i.classList.add('sel')};
-$('#desk').ondblclick=e=>{const i=e.target.closest('.ico');if(i)i.dataset.app==='folder'?msg('Windows Explorer','This folder is empty.','ℹ️'):openApp(i.dataset.app)};
+$('#desk').ondblclick=e=>{const i=e.target.closest('.ico');if(i)i.dataset.app==='folder'?msg('Windowz Explorer','This folder is empty.','ℹ️'):openApp(i.dataset.app)};
 $('#sm').onclick=e=>{const i=e.target.closest('.it');if(i){openApp(i.dataset.app);toggleSM(false)}};
 $('#start').onclick=e=>{e.stopPropagation();toggleSM()};
 document.addEventListener('mousedown',e=>{if(!e.target.closest('#sm,#start'))toggleSM(false)});
 function toggleSM(v){const on=v===undefined?!$('#sm').classList.contains('on'):v;$('#sm').classList.toggle('on',on);$('#start').classList.toggle('on',on)}
 function shutdown(msg){toggleSM(false);Object.keys(wins).forEach(k=>closeWin(k));$('#offmsg').textContent=msg;$('#off').style.display='flex'}
-$('#shut').onclick=()=>shutdown('Windows is shutting down...');
+$('#shut').onclick=()=>shutdown('Windowz is shutting down...');
 $('#logoff').onclick=()=>showLogin();
 $('#off').onclick=()=>boot();
 setInterval(()=>$('#clock').textContent=new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}),1000);
@@ -273,19 +273,19 @@ function run(){
   el.querySelector('.body').innerHTML=`<div class="dlg" style="flex-direction:column;align-items:stretch"><div>Type the name of a program (notepad, calc, paint, mine, computer).</div><input id="rin" style="padding:3px" value="notepad"></div><div style="text-align:right;padding:0 12px 10px"><button class="btn" id="rok">OK</button> <button class="btn" id="rcn">Cancel</button></div>`;
   const go=()=>{const v=el.querySelector('#rin').value.trim().toLowerCase();closeWin(id);
     const m={calc:'calc',calculator:'calc',notepad:'notepad',paint:'paint',mspaint:'paint',mine:'mine',winmine:'mine',computer:'computer',explorer:'computer'}[v];
-    m?openApp(m):msg('Run',`Windows cannot find '${v}'. Make sure you typed the name correctly.`,'❌')};
+    m?openApp(m):msg('Run',`Windowz cannot find '${v}'. Make sure you typed the name correctly.`,'❌')};
   el.querySelector('#rok').onclick=go;el.querySelector('#rcn').onclick=()=>closeWin(id);
   el.querySelector('#rin').onkeydown=e=>{if(e.key==='Enter')go()};el.querySelector('#rin').select();
 }
 
 /* apps */
 const BUILD={
-about(b){b.innerHTML=`<div class="dlg"><b><img src="logo.png" style="height:48px;max-width:90px;object-fit:contain" onerror="this.replaceWith('🪟')"></b><div><strong>Microsoft Windows XP</strong><br>Professional · Version 2002<br>Copyright © 1985-2001 Microsoft Corporation<br><br>Built with HTML, CSS and JS.</div></div><div style="text-align:center"><button class="btn">OK</button></div>`;b.querySelector('.btn').onclick=()=>closeWin('about')},
+about(b){b.innerHTML=`<div class="dlg"><b><img src="logo.png" style="height:48px;max-width:90px;object-fit:contain" onerror="this.replaceWith('🪟')"></b><div><strong>Microsoft Windowz XP</strong><br>Professional · Version 2002<br>Copyright © 1985-2001 Microsoft Corporation<br><br>Built with HTML, CSS and JS.</div></div><div style="text-align:center"><button class="btn">OK</button></div>`;b.querySelector('.btn').onclick=()=>closeWin('about')},
 
 computer(b){
   const items=[['💾','Local Disk (C:)'],['📀','DVD Drive (D:)'],['📁','Shared Documents'],['📁',"Administrator's Documents"],['🖨️','Printers and Faxes'],['⚙️','Control Panel']];
   b.innerHTML=`<div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Help</span></div><div class="mc"><div class="addr">Address <div>🖥️ My Computer</div></div><h4>System Tasks</h4><div style="padding:10px">${items.map(([i,l])=>`<div class="ico" style="width:100px"><b>${i}</b><span>${l}</span></div>`).join('')}</div></div>`;
-  b.ondblclick=e=>{const i=e.target.closest('.ico');if(i)msg('Windows Explorer',`${i.textContent.trim().slice(2)} is not accessible.<br>Access is denied.`,'❌')};
+  b.ondblclick=e=>{const i=e.target.closest('.ico');if(i)msg('Windowz Explorer',`${i.textContent.trim().slice(2)} is not accessible.<br>Access is denied.`,'❌')};
   b.onclick=e=>{b.querySelectorAll('.ico').forEach(x=>x.classList.remove('sel'));const i=e.target.closest('.ico');if(i)i.classList.add('sel')};
 },
 
@@ -401,7 +401,7 @@ mine(b,id){
 },
 
 cmd(b,id){
-  const FS={'Windows':{'system32':{}},'Program Files':{'Internet Explorer':{}},'Documents and Settings':{'Administrator':{'My Documents':{'readme.txt':'Welcome to Windows XP.'}}}};
+  const FS={'Windowz':{'system32':{}},'Program Files':{'Internet Explorer':{}},'Documents and Settings':{'Administrator':{'My Documents':{'readme.txt':'Welcome to Windowz XP.'}}}};
   let cwd=[],hist=[],hi=0;
   b.innerHTML=`<div class="cmd"><div class="out"></div><div class="ln"><span class="pr"></span><input spellcheck="false"></div></div>`;
   const c=b.querySelector('.cmd'),out=b.querySelector('.out'),inp=b.querySelector('input'),pr=b.querySelector('.pr');
@@ -419,21 +419,21 @@ cmd(b,id){
     cls:()=>{out.textContent='';return''},
     date:()=>'The current date is: '+new Date().toLocaleDateString(),
     time:()=>'The current time is: '+new Date().toLocaleTimeString(),
-    ver:()=>'Microsoft Windows XP [Version 5.1.2600]',
+    ver:()=>'Microsoft Windowz XP [Version 5.1.2600]',
     whoami:()=>'xp-pc\\administrator',hostname:()=>'XP-PC',
-    ipconfig:()=>'Windows IP Configuration\n\nEthernet adapter Local Area Connection:\n\n   IP Address. . . . : 192.168.1.100\n   Subnet Mask . . . : 255.255.255.0\n   Default Gateway . : 192.168.1.1',
+    ipconfig:()=>'Windowz IP Configuration\n\nEthernet adapter Local Area Connection:\n\n   IP Address. . . . : 192.168.1.100\n   Subnet Mask . . . : 255.255.255.0\n   Default Gateway . : 192.168.1.1',
     ping:a=>{if(!a)return'Usage: ping host';const ms=()=>8+Math.random()*30|0;return`Pinging ${a} with 32 bytes of data:\n\n`+[0,1,2,3].map(()=>`Reply from ${a}: bytes=32 time=${ms()}ms TTL=117`).join('\n')},
     tasklist:()=>Object.entries(wins).map(([k,v])=>k.padEnd(12)+v.el.querySelector('.t').textContent).join('\n'),
     taskkill:a=>{const k=a.replace(/\/im\s*/i,'').replace(/\.exe$/i,'').toLowerCase();if(wins[k]&&!k.startsWith('dlg')){closeWin(k);return`SUCCESS: Sent termination signal to "${k}".`}return`ERROR: The process "${a}" not found.`},
     color:a=>{if(!/^[0-9a-f]{2}$/i.test(a||''))return'Usage: color bf  (background digit, then text digit: 0-9, a-f)';c.style.background=pal[parseInt(a[0],16)];c.style.color=pal[parseInt(a[1],16)];return''},
-    start:a=>apps[a]?(openApp(apps[a]),''):'Windows cannot find '+a,
-    shutdown:()=>{shutdown('Windows is shutting down...');return''},
+    start:a=>apps[a]?(openApp(apps[a]),''):'Windowz cannot find '+a,
+    shutdown:()=>{shutdown('Windowz is shutting down...');return''},
     exit:()=>{closeWin(id);return''},
     bsod:()=>{bsod();return''},
     miku:()=>{miku();return'♪ Hatsune Miku - "first sound of the future" ♪'},
     screensaver:()=>{sstart();return''}
   };
-  w('Microsoft Windows XP [Version 5.1.2600]\n(C) Copyright 1985-2001 Microsoft Corp.\n');upd();
+  w('Microsoft Windowz XP [Version 5.1.2600]\n(C) Copyright 1985-2001 Microsoft Corp.\n');upd();
   inp.onkeydown=e=>{
     if(e.key==='ArrowUp'&&hist.length){hi=Math.max(0,hi-1);inp.value=hist[hi]}
     if(e.key==='ArrowDown'){hi=Math.min(hist.length,hi+1);inp.value=hist[hi]||''}
@@ -500,7 +500,7 @@ function showLogin(){closeAll();toggleSM(false);$('#bal').style.display='none';$
   document.querySelectorAll('.u').forEach(x=>x.classList.remove('on'))}
 function boot(){closeAll();toggleSM(false);$('#off').style.display='none';$('#boot').style.display='flex';
   setTimeout(()=>{$('#boot').style.display='none';showLogin()},2800)}
-$('#lsh').onclick=()=>{$('#login').style.display='none';shutdown('Windows is shutting down...')};
+$('#lsh').onclick=()=>{$('#login').style.display='none';shutdown('Windowz is shutting down...')};
 function bsod(){tone([[110,.8]],'sawtooth',.08);$('#bsod').style.display='block'}
 $('#bsod').onclick=()=>{$('#bsod').style.display='none';boot()};
 let idle=0,raf;const ss=document.createElement('canvas');ss.id='ss';document.body.append(ss);
@@ -513,7 +513,8 @@ function sstop(){cancelAnimationFrame(raf);ss.style.display='none'}
 document.addEventListener('mousemove',e=>{if(Math.abs(e.movementX)+Math.abs(e.movementY)>2){idle=0;if(ss.style.display==='block')sstop()}});
 setInterval(()=>{if(++idle>=60&&ss.style.display!=='block'&&$('#login').style.display!=='flex'&&$('#boot').style.display!=='flex')sstart()},1000);
 function miku(){
-  document.body.classList.add('miku');document.body.style.background='url(mikuuu.png) center/cover no-repeat,linear-gradient(#39c5bb,#d9fffb 60%,#39c5bb)';
+  document.body.classList.add('miku');const MB='linear-gradient(#39c5bb,#d9fffb 60%,#39c5bb)';document.body.style.background=MB;
+  const im=new Image();im.onload=()=>{const fit=Math.abs(im.width/im.height/(innerWidth/innerHeight)-1)<.35?'cover':'contain';if(document.body.classList.contains('miku'))document.body.style.background=`url(mikuuu.png) center/${fit} no-repeat,${MB}`};im.src='mikuuu.png';
   tone([[659,.25],[784,.25],[880,.25],[988,.25],[1319,.5],[988,.25],[1319,.9]],'triangle',.12);
   showBal('♪ Miku mode ♪','"Hatsune Miku" means "first sound of the future". Pick a wallpaper in Display Properties to go back.');
   for(let i=0;i<36;i++){const n=document.createElement('div');n.className='note';n.textContent=['♪','♫','♪','🥬'][i%4];
