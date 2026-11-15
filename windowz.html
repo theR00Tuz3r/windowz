@@ -329,7 +329,7 @@ calc(b,id){
     else if(k==='MC')mem=0;
     else if(k==='MR'){cur=String(mem);fresh=true}
     else if(k==='M+')mem+=num();
-    else if(k==='='){if(op){calc();if(cur==='39')miku()}op=null;fresh=true}
+    else if(k==='='){if(op){calc();if(cur==='31')miku()}op=null;fresh=true}
     else{if(op&&!fresh)calc();else a=num();op=k;fresh=true}
     scr.textContent=cur};
   b.querySelector('.g').onclick=e=>e.target.dataset.k&&press(e.target.dataset.k);
@@ -513,7 +513,7 @@ function sstop(){cancelAnimationFrame(raf);ss.style.display='none'}
 document.addEventListener('mousemove',e=>{if(Math.abs(e.movementX)+Math.abs(e.movementY)>2){idle=0;if(ss.style.display==='block')sstop()}});
 setInterval(()=>{if(++idle>=60&&ss.style.display!=='block'&&$('#login').style.display!=='flex'&&$('#boot').style.display!=='flex')sstart()},1000);
 function miku(){
-  document.body.classList.add('miku');document.body.style.background='linear-gradient(#39c5bb,#d9fffb 60%,#39c5bb)';
+  document.body.classList.add('miku');document.body.style.background='url(mikuuu.png) center/cover no-repeat,linear-gradient(#39c5bb,#d9fffb 60%,#39c5bb)';
   tone([[659,.25],[784,.25],[880,.25],[988,.25],[1319,.5],[988,.25],[1319,.9]],'triangle',.12);
   showBal('♪ Miku mode ♪','"Hatsune Miku" means "first sound of the future". Pick a wallpaper in Display Properties to go back.');
   for(let i=0;i<36;i++){const n=document.createElement('div');n.className='note';n.textContent=['♪','♫','♪','🥬'][i%4];
