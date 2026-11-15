@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Windows XP</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+*{box-sizing:border-box;user-select:none}
+html,body{height:100%;margin:0;overflow:hidden;font:11px Tahoma,Verdana,sans-serif;color:#000}
+body{background:#3a6ea5 url(wallpaper.jpg) center/cover no-repeat}
+#desk{position:absolute;inset:0 0 30px 0;padding:8px;display:flex;flex-direction:column;flex-wrap:wrap;align-content:flex-start;gap:6px}
+.ico{width:76px;padding:4px;text-align:center;color:#fff;text-shadow:1px 1px 2px #000;cursor:default;border:1px solid transparent}
+.ico b{display:block;font-size:30px;font-weight:400;line-height:36px}
+.ico.sel span{background:#316ac5;text-shadow:none;padding:1px 2px}
+.ico.sel b{filter:sepia(1) hue-rotate(190deg) saturate(3)}
+/* windows */
+.win{position:absolute;min-width:200px;min-height:80px;background:#ece9d8;border:3px solid #0831d9;border-top:0;border-radius:8px 8px 0 0;box-shadow:3px 3px 12px rgba(0,0,0,.5);display:flex;flex-direction:column;resize:both;overflow:hidden}
+.win.max{left:0!important;top:0!important;width:100%!important;height:calc(100% - 30px)!important;border-radius:0;resize:none}
+.win.min{display:none}
+.tbar{height:30px;flex:none;display:flex;align-items:center;gap:4px;padding:0 3px 0 6px;color:#fff;font-weight:700;font-size:13px;text-shadow:1px 1px #0a1f7a;background:linear-gradient(#0a5bdc 0,#3a8cf5 8%,#0a5bdc 40%,#0553d6 88%,#0245b8 100%);border-radius:6px 6px 0 0;margin:0 -3px}
+.win:not(.act) .tbar{background:linear-gradient(#7a96df,#9db3ea 10%,#7a96df 50%,#6d89d4);}
+.tbar .t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tbar button{width:22px;height:22px;border:1px solid #fff;border-radius:4px;color:#fff;font:700 12px Tahoma;line-height:1;padding:0;background:linear-gradient(135deg,#5d94f7,#2a63d8);cursor:pointer}
+.tbar button.x{background:linear-gradient(135deg,#e9886c,#c4401c)}
+.body{flex:1;overflow:auto;display:flex;flex-direction:column;min-height:0}
+.menu{display:flex;gap:2px;padding:2px 4px;border-bottom:1px solid #aca899;background:#ece9d8}
+.menu span,.menu button{padding:2px 7px;cursor:default;border:0;background:none;font:inherit}
+.menu button:hover,.menu span:hover{background:#316ac5;color:#fff}
+.btn{min-width:70px;padding:3px 10px;font:11px Tahoma;border:1px solid #003c74;border-radius:3px;background:linear-gradient(#fff,#ece9d8 85%,#d6d0c5);cursor:pointer}
+.btn:active{background:#d6d0c5}
+/* taskbar */
+#bar{position:absolute;left:0;right:0;bottom:0;height:30px;display:flex;background:linear-gradient(#245edb 0,#3f8cf3 9%,#245edb 18%,#245edb 92%,#1941a5 100%);z-index:99999;box-shadow:0 -1px 0 #0b3fb0}
+#start{width:100px;height:30px;border:0;border-radius:0 12px 12px 0;color:#fff;font:italic 700 18px Tahoma;text-shadow:1px 1px 2px #1b3d0e;background:linear-gradient(#5bb85b 0,#3c9c3c 15%,#2f8a2f 85%,#256f25);padding:0 12px 0 8px;display:flex;align-items:center;gap:5px;cursor:pointer;box-shadow:2px 0 4px rgba(0,0,0,.4)}
+#start:active,#start.on{filter:brightness(.88)}
+#tasks{flex:1;display:flex;gap:3px;padding:2px 6px;overflow:hidden}
+.tb{width:160px;min-width:40px;height:24px;margin-top:1px;border-radius:3px;background:#3c81f3;border:1px solid #1d4fb8;color:#fff;padding:0 6px;display:flex;align-items:center;gap:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.tb.act{background:#1e52b7;box-shadow:inset 1px 1px 3px #0b2a7a}
+#tray{width:90px;display:flex;align-items:center;justify-content:center;gap:8px;color:#fff;background:linear-gradient(#0f9bf0,#1290e8 20%,#0e84d8);border-left:1px solid #0b4ca8;box-shadow:inset 1px 0 #3fb4fa}
+/* start menu */
+#sm{position:absolute;left:0;bottom:30px;width:380px;display:none;z-index:99998;border-radius:8px 8px 0 0;overflow:hidden;border:1px solid #0831d9;box-shadow:3px -3px 10px rgba(0,0,0,.5)}
+#sm.on{display:block}
+#sm .hd{height:48px;background:linear-gradient(#1c5fd9,#3b8cf4 50%,#1c5fd9);color:#fff;font:700 15px Tahoma;display:flex;align-items:center;gap:10px;padding:0 10px;text-shadow:1px 1px #0a1f7a}
+#sm .hd i{font-style:normal;font-size:30px;background:#fff;border-radius:4px;width:38px;height:38px;display:grid;place-items:center;border:2px solid #cfdcf8}
+#sm .cols{display:flex;border-top:2px solid #e08a1e}
+#sm .l{flex:1;background:#fff;padding:6px 2px}
+#sm .r{width:150px;background:#d3e5fa;border-left:1px solid #95bdee;padding:6px 2px;color:#0f2a6b}
+#sm .it{display:flex;align-items:center;gap:8px;padding:5px 8px;font-size:12px;cursor:default}
+#sm .it b{font-size:22px;font-weight:400;width:28px;text-align:center}
+#sm .l .it:hover,#sm .r .it:hover{background:#316ac5;color:#fff}
+#sm hr{border:0;border-top:1px solid #ddd;margin:4px 8px}
+#sm .ft{height:36px;background:linear-gradient(#3b8cf4,#1c5fd9);display:flex;justify-content:flex-end;align-items:center;gap:6px;padding:0 8px;color:#fff}
+#sm .ft span{display:flex;align-items:center;gap:4px;padding:3px 6px;border-radius:3px;cursor:default}
+#sm .ft span:hover{background:rgba(255,255,255,.25)}
+#off{position:fixed;inset:0;background:#5a7edc;color:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999999;font:22px Trebuchet MS,Tahoma;cursor:pointer}
+/* apps */
+.calc{padding:6px;background:#ece9d8}
+.calc .scr{background:#fff;border:2px inset #aaa;text-align:right;padding:4px 6px;font:18px "Lucida Console",monospace;margin-bottom:6px;overflow:hidden;white-space:nowrap}
+.calc .g{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.calc button{height:30px;font:700 13px Tahoma;border:1px solid #003c74;border-radius:3px;background:linear-gradient(#fff,#ece9d8 85%,#d6d0c5);cursor:pointer}
+.calc button.o{color:#c00}.calc button.n{color:#00c}
+textarea.np{flex:1;border:0;outline:0;resize:none;font:13px "Lucida Console",monospace;padding:3px;user-select:text;width:100%}
+.mc{display:flex;flex-direction:column;background:#fff;flex:1}
+.mc .addr{background:#ece9d8;padding:3px 6px;border-bottom:1px solid #aca899;display:flex;gap:6px;align-items:center}
+.mc .addr div{flex:1;background:#fff;border:1px solid #7f9db9;padding:2px 4px}
+.mc h4{margin:0;padding:6px 10px;background:linear-gradient(90deg,#fff,#c6d3f7);color:#215dc6}
+.mc .ico{color:#000;text-shadow:none;display:inline-block;vertical-align:top}
+.paint{display:flex;flex:1;min-height:0;background:#808080}
+.paint .tools{width:64px;background:#ece9d8;padding:4px;display:flex;flex-wrap:wrap;gap:2px;align-content:flex-start}
+.paint .tools i{width:24px;height:24px;border:1px solid #888;cursor:pointer}
+.paint .tools i.s{outline:2px solid #000}
+.paint .cv{flex:1;overflow:auto;padding:4px}
+.paint canvas{background:#fff;cursor:crosshair;display:block}
+.mine{padding:6px;background:#c0c0c0;border:3px outset #fff;align-self:flex-start;margin:6px}
+.mine .top{display:flex;justify-content:space-between;align-items:center;border:2px inset #999;padding:3px 6px;margin-bottom:6px;background:#c0c0c0}
+.mine .top span{background:#000;color:#f00;font:700 20px "Lucida Console",monospace;padding:0 4px}
+.mine .top button{font-size:18px;width:30px;height:30px;border:2px outset #fff;background:#c0c0c0;cursor:pointer;padding:0}
+.mine .gr{display:grid;grid-template-columns:repeat(9,22px);border:3px inset #999}
+.mine .gr button{width:22px;height:22px;padding:0;margin:0;font:700 13px Tahoma;border:2px outset #fff;background:#c0c0c0;cursor:default}
+.mine .gr button.o{border:1px solid #888;background:#c0c0c0}
+.dlg{padding:14px;display:flex;gap:12px;align-items:center;background:#ece9d8;font-size:12px}
+.dlg b{font-size:30px;font-weight:400}
+.sb{padding:2px 8px;background:#ece9d8;border-top:1px solid #aca899;flex:none}
+.paint .tools u{width:24px;height:24px;border:1px outset #fff;text-decoration:none;text-align:center;line-height:22px;cursor:pointer;background:#ece9d8}
+.paint .tools u.s{border-style:inset;background:#fff}
+.cmd{flex:1;background:#000;color:#c0c0c0;font:14px "Lucida Console",monospace;overflow:auto;padding:4px;user-select:text}
+.cmd .out{white-space:pre-wrap;word-break:break-all}.cmd .ln{display:flex}.cmd input{flex:1;background:none;border:0;outline:0;color:inherit;font:inherit}
+.tm{flex:1;display:flex;flex-direction:column;background:#ece9d8;min-height:0}
+.tm .list{flex:1;background:#fff;border:1px solid #7f9db9;margin:6px;overflow:auto}
+.tm .list div{display:flex;padding:2px 6px}.tm .list div span:first-child{flex:1}.tm .list div span:last-child{width:90px}
+.tm .list .hd{background:#ece9d8;border-bottom:1px solid #aca899}.tm .list .s{background:#316ac5;color:#fff}
+.ie{flex:1;display:flex;flex-direction:column;min-height:0;background:#ece9d8}
+.ie iframe{flex:1;border:0;background:#fff}
+.addr2{display:flex;gap:4px;padding:4px;align-items:center}.addr2 input{flex:1;padding:2px}
+#ctx{position:fixed;display:none;z-index:99997;background:#fff;border:1px solid #aca899;box-shadow:2px 2px 4px rgba(0,0,0,.4);width:170px;padding:2px}
+#ctx div{padding:4px 18px}#ctx div:hover{background:#316ac5;color:#fff}#ctx hr{margin:2px 0;border:0;border-top:1px solid #ccc}
+</style>
+</head>
+<body>
+<div id="desk"></div>
+<div id="sm">
+  <div class="hd"><i>🙂</i>Administrator</div>
+  <div class="cols">
+    <div class="l" id="sml"></div>
+    <div class="r">
+      <div class="it" data-app="computer"><b>🖥️</b>My Computer</div>
+      <div class="it" data-app="notepad"><b>📝</b>My Documents</div>
+      <div class="it" data-app="paint"><b>🖼️</b>My Pictures</div>
+      <hr>
+      <div class="it" data-app="display"><b>⚙️</b>Control Panel</div>
+      <div class="it" data-app="about"><b>❔</b>Help and Support</div>
+      <div class="it" data-app="run"><b>🏃</b>Run...</div>
+    </div>
+  </div>
+  <div class="ft"><span id="logoff">🔑 Log Off</span><span id="shut">⏻ Turn Off Computer</span></div>
+</div>
+<div id="bar">
+  <button id="start">🪟 start</button>
+  <div id="tasks"></div>
+  <div id="tray"><span>🔊</span><span id="clock"></span></div>
+</div>
+<div id="off"><div id="offmsg">Windows is shutting down...</div><small>Click anywhere to start again</small></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const APPS={
+  computer:{t:'My Computer',i:'🖥️',w:480,h:340},
+  notepad:{t:'Untitled - Notepad',i:'📝',w:440,h:320},
+  calc:{t:'Calculator',i:'🧮',w:230,h:330},
+  paint:{t:'untitled - Paint',i:'🎨',w:560,h:400},
+  mine:{t:'Minesweeper',i:'💣',w:268,h:358},
+  cmd:{t:'Command Prompt',i:'⬛',w:560,h:340},
+  taskmgr:{t:'Windows Task Manager',i:'📊',w:360,h:380},
+  ie:{t:'Internet Explorer',i:'🌐',w:640,h:440},
+  display:{t:'Display Properties',i:'⚙️',w:340,h:230},
+  about:{t:'About Windows',i:'🪟',w:340,h:190}
+};
+const wins={};let z=10,n=0;
+
+/* desktop + start menu */
+[['computer','My Computer'],['ie','Internet Explorer'],['notepad','Notepad'],['cmd','Command Prompt'],['calc','Calculator'],['paint','Paint'],['mine','Minesweeper'],['taskmgr','Task Manager']].forEach(([k,l])=>{
+  const d=document.createElement('div');d.className='ico';d.dataset.app=k;
+  d.innerHTML=`<b>${APPS[k].i}</b><span>${l}</span>`;$('#desk').append(d);
+});
+$('#sml').innerHTML=['ie','cmd','notepad','calc','paint','mine','taskmgr'].map(k=>`<div class="it" data-app="${k}"><b>${APPS[k].i}</b>${APPS[k].t.replace('Untitled - ','')}</div>`).join('');
+$('#desk').onclick=e=>{document.querySelectorAll('.ico').forEach(x=>x.classList.remove('sel'));const i=e.target.closest('.ico');if(i)i.classList.add('sel')};
+$('#desk').ondblclick=e=>{const i=e.target.closest('.ico');if(i)openApp(i.dataset.app)};
+$('#sm').onclick=e=>{const i=e.target.closest('.it');if(i){openApp(i.dataset.app);toggleSM(false)}};
+$('#start').onclick=e=>{e.stopPropagation();toggleSM()};
+document.addEventListener('mousedown',e=>{if(!e.target.closest('#sm,#start'))toggleSM(false)});
+function toggleSM(v){const on=v===undefined?!$('#sm').classList.contains('on'):v;$('#sm').classList.toggle('on',on);$('#start').classList.toggle('on',on)}
+function shutdown(msg){toggleSM(false);Object.keys(wins).forEach(k=>closeWin(k));$('#offmsg').textContent=msg;$('#off').style.display='flex'}
+$('#shut').onclick=()=>shutdown('Windows is shutting down...');
+$('#logoff').onclick=()=>shutdown('Logging off...');
+$('#off').onclick=()=>$('#off').style.display='none';
+setInterval(()=>$('#clock').textContent=new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}),1000);
+$('#clock').textContent=new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
+
+/* window manager */
+function openApp(k){
+  if(k==='run')return run();
+  if(wins[k]){restore(k);return}
+  const a=APPS[k];if(!a)return;
+  const el=makeWin(k,a.t,a.i,a.w,a.h,k!=='about');
+  BUILD[k](el.querySelector('.body'),k);
+}
+function makeWin(id,title,icon,w,h,full=true){
+  const el=document.createElement('div');el.className='win';
+  const off=(n++%8)*26;
+  el.style.cssText=`left:${90+off}px;top:${40+off}px;width:${w}px;height:${h}px`;
+  el.innerHTML=`<div class="tbar"><span>${icon}</span><span class="t">${title}</span>${full?'<button class="m">_</button><button class="M">□</button>':''}<button class="x">✕</button></div><div class="body"></div>`;
+  document.body.append(el);
+  const tb=document.createElement('div');tb.className='tb';tb.innerHTML=`${icon} ${title}`;$('#tasks').append(tb);
+  wins[id]={el,tb};
+  el.onmousedown=()=>focus(id);
+  tb.onclick=()=>{const w=wins[id];if(w.el.classList.contains('min')||!w.el.classList.contains('act'))restore(id);else minimize(id)};
+  el.querySelector('.x').onclick=()=>closeWin(id);
+  if(full){el.querySelector('.m').onclick=()=>minimize(id);el.querySelector('.M').onclick=()=>el.classList.toggle('max');
+    el.querySelector('.tbar').ondblclick=e=>{if(e.target.tagName!=='BUTTON')el.classList.toggle('max')}}
+  drag(el,el.querySelector('.tbar'));
+  focus(id);return el;
+}
+function drag(el,h){
+  h.onmousedown=e=>{
+    if(e.target.tagName==='BUTTON'||el.classList.contains('max'))return;
+    const dx=e.clientX-el.offsetLeft,dy=e.clientY-el.offsetTop;
+    const mv=ev=>{el.style.left=ev.clientX-dx+'px';el.style.top=Math.max(0,ev.clientY-dy)+'px'};
+    const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up)};
+    document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);e.preventDefault();
+  };
+}
+function focus(id){
+  Object.entries(wins).forEach(([k,w])=>{const a=k===id;w.el.classList.toggle('act',a);w.tb.classList.toggle('act',a)});
+  wins[id].el.style.zIndex=++z;
+}
+function minimize(id){const w=wins[id];w.el.classList.add('min');w.el.classList.remove('act');w.tb.classList.remove('act')}
+function restore(id){wins[id].el.classList.remove('min');focus(id)}
+function closeWin(id){const w=wins[id];if(!w)return;w.el.remove();w.tb.remove();delete wins[id]}
+function msg(title,text,icon='⚠️'){
+  const id='dlg'+Math.random();
+  const el=makeWin(id,title,'🪟',300,130,false);
+  el.style.left=(innerWidth/2-150)+'px';el.style.top=(innerHeight/2-100)+'px';el.style.resize='none';
+  el.querySelector('.body').innerHTML=`<div class="dlg"><b>${icon}</b><div>${text}</div></div><div style="text-align:center;padding-bottom:8px"><button class="btn">OK</button></div>`;
+  el.querySelector('.btn').onclick=()=>closeWin(id);
+}
+function run(){
+  const id='run';const el=makeWin(id,'Run','🏃',330,150,false);el.style.resize='none';
+  el.querySelector('.body').innerHTML=`<div class="dlg" style="flex-direction:column;align-items:stretch"><div>Type the name of a program (notepad, calc, paint, mine, computer).</div><input id="rin" style="padding:3px" value="notepad"></div><div style="text-align:right;padding:0 12px 10px"><button class="btn" id="rok">OK</button> <button class="btn" id="rcn">Cancel</button></div>`;
+  const go=()=>{const v=el.querySelector('#rin').value.trim().toLowerCase();closeWin(id);
+    const m={calc:'calc',calculator:'calc',notepad:'notepad',paint:'paint',mspaint:'paint',mine:'mine',winmine:'mine',computer:'computer',explorer:'computer'}[v];
+    m?openApp(m):msg('Run',`Windows cannot find '${v}'. Make sure you typed the name correctly.`,'❌')};
+  el.querySelector('#rok').onclick=go;el.querySelector('#rcn').onclick=()=>closeWin(id);
+  el.querySelector('#rin').onkeydown=e=>{if(e.key==='Enter')go()};el.querySelector('#rin').select();
+}
+
+/* apps */
+const BUILD={
+about(b){b.innerHTML=`<div class="dlg"><b>🪟</b><div><strong>Windowz XP</strong><br>Professional · Version 2002<br>Copyright © 1985-2001 /R00T<br><br>Built with HTML, CSS and JS.</div></div><div style="text-align:center"><button class="btn">OK</button></div>`;b.querySelector('.btn').onclick=()=>closeWin('about')},
+
+computer(b){
+  const items=[['💾','Local Disk (C:)'],['📀','DVD Drive (D:)'],['📁','Shared Documents'],['📁',"Administrator's Documents"],['🖨️','Printers and Faxes'],['⚙️','Control Panel']];
+  b.innerHTML=`<div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Help</span></div><div class="mc"><div class="addr">Address <div>🖥️ My Computer</div></div><h4>System Tasks</h4><div style="padding:10px">${items.map(([i,l])=>`<div class="ico" style="width:100px"><b>${i}</b><span>${l}</span></div>`).join('')}</div></div>`;
+  b.ondblclick=e=>{const i=e.target.closest('.ico');if(i)msg('Windows Explorer',`${i.textContent.trim().slice(2)} is not accessible.<br>Access is denied.`,'❌')};
+  b.onclick=e=>{b.querySelectorAll('.ico').forEach(x=>x.classList.remove('sel'));const i=e.target.closest('.ico');if(i)i.classList.add('sel')};
+},
+
+
+
+
+
+notepad(b,id){
+  b.innerHTML=`<div class="menu"><button data-a="n">New</button><button data-a="o">Open</button><button data-a="s">Save</button><button data-a="f">Find</button><button data-a="d">Time/Date</button><button data-a="w">Wrap</button><button data-a="+">A+</button><button data-a="-">A−</button></div><textarea class="np" spellcheck="false"></textarea><div class="sb">Ln 1, Col 1</div><input type="file" hidden accept=".txt,text/*">`;
+  const t=b.querySelector('textarea'),sb=b.querySelector('.sb'),fi=b.querySelector('input'),ti=wins[id].el.querySelector('.t');let fs=13;
+  const st=()=>{const p=t.value.slice(0,t.selectionStart).split('\n');sb.textContent=`Ln ${p.length}, Col ${p[p.length-1].length+1}   |   ${t.value.length} chars`};
+  t.oninput=t.onclick=t.onkeyup=st;t.focus();
+  fi.onchange=()=>{const f=fi.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{t.value=r.result;ti.textContent=f.name+' - Notepad';st()};r.readAsText(f)};
+  b.querySelector('.menu').onclick=e=>{const a=e.target.dataset.a;if(!a)return;
+    if(a==='n'){t.value='';ti.textContent='Untitled - Notepad'}
+    if(a==='o')fi.click();
+    if(a==='w')t.style.whiteSpace=t.style.whiteSpace==='pre'?'':'pre';
+    if(a==='d')t.setRangeText(new Date().toLocaleString(),t.selectionStart,t.selectionEnd,'end');
+    if(a==='+'||a==='-'){fs=Math.min(40,Math.max(8,fs+(a==='+'?2:-2)));t.style.fontSize=fs+'px'}
+    if(a==='f'){const q=prompt('Find what:');if(q){const v=t.value.toLowerCase(),i=v.indexOf(q.toLowerCase(),t.selectionEnd),j=i<0?v.indexOf(q.toLowerCase()):i;if(j<0)msg('Notepad',`Cannot find "${q}"`,'ℹ️');else{t.focus();t.setSelectionRange(j,j+q.length)}}}
+    if(a==='s'){const l=document.createElement('a');l.href=URL.createObjectURL(new Blob([t.value]));l.download=ti.textContent.replace(' - Notepad','').replace(/^Untitled$/,'Untitled.txt');l.click()}
+    st()};
+},
+
+calc(b,id){
+  let a=0,op=null,cur='0',fresh=false,mem=0;
+  const keys=['MC','MR','M+','C','√','x²','1/x','/','7','8','9','*','4','5','6','-','1','2','3','+','±','0','.','='];
+  b.innerHTML=`<div class="menu"><span>Edit</span><span>View</span><span>Help</span></div><div class="calc"><div class="scr">0</div><div class="g">${keys.map(k=>`<button class="${'/*-+='.includes(k)?'o':'n'}" data-k="${k}">${k==='*'?'×':k==='/'?'÷':k}</button>`).join('')}</div></div>`;
+  const scr=b.querySelector('.scr'),num=()=>parseFloat(cur);
+  const fmt=r=>{if(!isFinite(r)){cur='Error';a=0;op=null;fresh=true}else cur=String(+r.toPrecision(12))};
+  const calc=()=>{const x=num();a=op==='+'?a+x:op==='-'?a-x:op==='*'?a*x:op==='/'?a/x:x;fmt(a)};
+  const press=k=>{if(cur==='Error')cur='0';
+    if(/^\d$/.test(k)){cur=fresh||cur==='0'?k:cur+k;fresh=false}
+    else if(k==='.'){if(fresh){cur='0';fresh=false}if(!cur.includes('.'))cur+='.'}
+    else if(k==='C'){a=0;op=null;cur='0';fresh=false}
+    else if(k==='⌫'){cur=cur.length>1?cur.slice(0,-1):'0'}
+    else if(k==='±')cur=String(-num());
+    else if(k==='√'){fmt(Math.sqrt(num()));fresh=true}
+    else if(k==='x²'){fmt(num()**2);fresh=true}
+    else if(k==='1/x'){fmt(1/num());fresh=true}
+    else if(k==='MC')mem=0;
+    else if(k==='MR'){cur=String(mem);fresh=true}
+    else if(k==='M+')mem+=num();
+    else if(k==='='){if(op)calc();op=null;fresh=true}
+    else{if(op&&!fresh)calc();else a=num();op=k;fresh=true}
+    scr.textContent=cur};
+  b.querySelector('.g').onclick=e=>e.target.dataset.k&&press(e.target.dataset.k);
+  document.addEventListener('keydown',function h(e){
+    if(!wins[id])return document.removeEventListener('keydown',h);
+    if(!wins[id].el.classList.contains('act'))return;
+    const k=e.key==='Enter'?'=':e.key==='Backspace'?'⌫':e.key==='Escape'?'C':e.key;
+    if(/^[\d.+\-*\/=C]$|^⌫$/.test(k)){press(k);e.preventDefault()}});
+},
+
+paint(b){
+  const cols=['#000','#808080','#800000','#808000','#008000','#008080','#000080','#800080','#fff','#c0c0c0','#f00','#ff0','#0f0','#0ff','#00f','#f0f'],W=900,H=600;
+  b.innerHTML=`<div class="menu"><button data-a="u">Undo</button><button data-a="c">Clear</button><button data-a="s">Save</button></div><div class="paint"><div class="tools">${[['✏️','pen'],['🧽','eraser'],['╱','line'],['▭','rect'],['⬭','oval'],['🪣','fill']].map(([i,t],k)=>`<u data-t="${t}" title="${t}" class="${k?'':'s'}">${i}</u>`).join('')}${cols.map(c=>`<i style="background:${c}" data-c="${c}"></i>`).join('')}<input type="color" value="#000000" style="width:100%;margin-top:4px"><select style="width:100%;margin-top:4px"><option value="2">Thin</option><option value="5" selected>Medium</option><option value="12">Thick</option></select></div><div class="cv"><canvas width="${W}" height="${H}"></canvas></div></div><div class="sb">pen</div>`;
+  const cv=b.querySelector('canvas'),ctx=cv.getContext('2d'),sel=b.querySelector('select'),sb=b.querySelector('.sb'),ci=b.querySelector('input');
+  ctx.lineCap=ctx.lineJoin='round';ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+  let col='#000',tool='pen',draw=false,s,img;const hist=[];
+  const snap=()=>{hist.push(ctx.getImageData(0,0,W,H));if(hist.length>20)hist.shift()};
+  const pos=e=>{const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};
+  const fill=(x,y)=>{ctx.fillStyle=col;const h=ctx.fillStyle,c=[1,3,5].map(i=>parseInt(h.substr(i,2),16)),im=ctx.getImageData(0,0,W,H),d=im.data,i0=(y*W+x)*4,t=[d[i0],d[i0+1],d[i0+2]];
+    if(t.join()===c.join())return;const st=[[x,y]];
+    while(st.length){const[px,py]=st.pop();if(px<0||py<0||px>=W||py>=H)continue;const i=(py*W+px)*4;if(d[i]!==t[0]||d[i+1]!==t[1]||d[i+2]!==t[2])continue;d[i]=c[0];d[i+1]=c[1];d[i+2]=c[2];d[i+3]=255;st.push([px+1,py],[px-1,py],[px,py+1],[px,py-1])}
+    ctx.putImageData(im,0,0)};
+  cv.onmousedown=e=>{const[x,y]=pos(e);snap();if(tool==='fill'){fill(x|0,y|0);return}
+    draw=true;s=[x,y];img=ctx.getImageData(0,0,W,H);ctx.strokeStyle=tool==='eraser'?'#fff':col;ctx.lineWidth=tool==='eraser'?sel.value*3:sel.value;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y);ctx.stroke()};
+  cv.onmousemove=e=>{const[x,y]=pos(e);sb.textContent=`${tool}   ${x|0}, ${y|0}`;if(!draw)return;
+    if(tool==='pen'||tool==='eraser'){ctx.lineTo(x,y);ctx.stroke();return}
+    ctx.putImageData(img,0,0);ctx.beginPath();
+    if(tool==='line'){ctx.moveTo(...s);ctx.lineTo(x,y)}
+    else if(tool==='rect')ctx.rect(s[0],s[1],x-s[0],y-s[1]);
+    else ctx.ellipse((s[0]+x)/2,(s[1]+y)/2,Math.abs(x-s[0])/2,Math.abs(y-s[1])/2,0,0,7);
+    ctx.stroke()};
+  document.addEventListener('mouseup',()=>draw=false);
+  b.querySelector('.tools').onclick=e=>{const t=e.target.dataset.t,c=e.target.dataset.c;
+    if(t){tool=t;b.querySelectorAll('.tools u').forEach(u=>u.classList.toggle('s',u===e.target))}
+    if(c){col=c;ci.value=c.length===4?'#'+[...c.slice(1)].map(x=>x+x).join(''):c}};
+  ci.oninput=()=>col=ci.value;
+  b.querySelector('.menu').onclick=e=>{const a=e.target.dataset.a;
+    if(a==='u'){const h=hist.pop();if(h)ctx.putImageData(h,0,0)}
+    if(a==='c'){snap();ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H)}
+    if(a==='s'){const l=document.createElement('a');l.href=cv.toDataURL();l.download='untitled.png';l.click()}};
+},
+
+mine(b,id){
+  const L={Beginner:[9,10],Intermediate:[16,40]};let N=9,M=10,cells,over,t0,tm;
+  b.innerHTML=`<div class="menu"><button data-l="Beginner">Beginner</button><button data-l="Intermediate">Intermediate</button></div><div class="mine"><div class="top"><span id="mc">010</span><button>🙂</button><span id="mt">000</span></div><div class="gr"></div></div>`;
+  const gr=b.querySelector('.gr'),face=b.querySelector('.top button'),mt=b.querySelector('#mt'),mc=b.querySelector('#mc');
+  const nb=i=>{const x=i%N,y=(i/N)|0,r=[];for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const X=x+dx,Y=y+dy;if((dx||dy)&&X>=0&&X<N&&Y>=0&&Y<N)r.push(Y*N+X)}return r};
+  const calcN=()=>cells.forEach((c,j)=>c.n=nb(j).filter(k=>cells[k].m).length);
+  function reset(l){
+    if(l){[N,M]=L[l];const el=wins[id].el;if(!el.classList.contains('max')){el.style.width=N*22+70+'px';el.style.height=N*22+160+'px'}}
+    clearInterval(tm);t0=0;mt.textContent='000';over=false;face.textContent='🙂';
+    cells=Array.from({length:N*N},()=>({m:0,o:0,f:0,n:0}));
+    for(let p=0;p<M;){const i=Math.random()*N*N|0;if(!cells[i].m){cells[i].m=1;p++}}
+    calcN();gr.style.gridTemplateColumns=`repeat(${N},22px)`;gr.innerHTML=cells.map((_,i)=>`<button data-i="${i}"></button>`).join('');draw()}
+  function draw(){
+    const bs=gr.children,col=['','#00f','#080','#f00','#008','#800','#088','#000','#888'];
+    cells.forEach((c,i)=>{const e=bs[i];e.className=c.o?'o':'';
+      e.textContent=c.f&&!c.o?'🚩':c.o?(c.m?'💣':c.n||''):(over&&c.m?'💣':'');e.style.color=col[c.n]||''});
+    mc.textContent=String(Math.max(0,M-cells.filter(c=>c.f).length)).padStart(3,'0')}
+  function open(i){const st=[i];while(st.length){const j=st.pop(),c=cells[j];if(c.o||c.f)continue;c.o=1;if(!c.n&&!c.m)st.push(...nb(j))}}
+  gr.onclick=e=>{const i=e.target.dataset.i;if(i===undefined||over)return;const c=cells[i];if(c.f)return;
+    if(!t0){if(c.m){c.m=0;let k;do{k=Math.random()*N*N|0}while(cells[k].m||k==i);cells[k].m=1;calcN()}
+      t0=Date.now();tm=setInterval(()=>{if(!wins[id])return clearInterval(tm);mt.textContent=String(Math.min(999,(Date.now()-t0)/1000|0)).padStart(3,'0')},500)}
+    if(c.m){over=true;clearInterval(tm);cells.forEach(x=>{if(x.m)x.o=1});face.textContent='😵'}
+    else{open(+i);if(cells.every(x=>x.o||x.m)){over=true;clearInterval(tm);face.textContent='😎'}}draw()};
+  gr.oncontextmenu=e=>{e.preventDefault();const i=e.target.dataset.i;if(i===undefined||over||cells[i].o)return;cells[i].f^=1;draw()};
+  b.querySelector('.menu').onclick=e=>e.target.dataset.l&&reset(e.target.dataset.l);
+  face.onclick=()=>reset();reset();
+},
+
+cmd(b,id){
+  const FS={'Windows':{'system32':{}},'Program Files':{'Internet Explorer':{}},'Documents and Settings':{'Administrator':{'My Documents':{'readme.txt':'Welcome to Windows XP.'}}}};
+  let cwd=[],hist=[],hi=0;
+  b.innerHTML=`<div class="cmd"><div class="out"></div><div class="ln"><span class="pr"></span><input spellcheck="false"></div></div>`;
+  const c=b.querySelector('.cmd'),out=b.querySelector('.out'),inp=b.querySelector('input'),pr=b.querySelector('.pr');
+  const P=()=>'C:\\'+cwd.join('\\'),dir=()=>cwd.reduce((d,k)=>d[k],FS),find=(d,n)=>Object.keys(d).find(k=>k.toLowerCase()===n.toLowerCase()),w=t=>out.append(t+'\n'),upd=()=>pr.textContent=P()+'>';
+  const apps={notepad:'notepad',calc:'calc',mspaint:'paint',paint:'paint',winmine:'mine',explorer:'computer',iexplore:'ie',taskmgr:'taskmgr',cmd:'cmd',control:'display'};
+  const pal=['#000','#000080','#008000','#008080','#800000','#800080','#808000','#c0c0c0','#808080','#00f','#0f0','#0ff','#f00','#f0f','#ff0','#fff'];
+  const CMDS={
+    help:()=>'Commands: help dir cd md type del echo cls date time ver whoami hostname\nipconfig ping tasklist taskkill color start shutdown exit\nTip: type an app name (notepad, calc, mspaint, winmine...) to launch it.',
+    dir:()=>{const d=dir(),k=Object.keys(d);return` Directory of ${P()}\n\n`+k.map(n=>typeof d[n]==='object'?`<DIR>          ${n}`:`${String(d[n].length).padStart(5)} bytes   ${n}`).join('\n')+`\n\n   ${k.length} item(s)`},
+    cd:a=>{if(!a)return P();if(a==='\\'){cwd=[];return''}if(a==='..'){cwd.pop();return''}const k=find(dir(),a);if(k&&typeof dir()[k]==='object'){cwd.push(k);return''}return'The system cannot find the path specified.'},
+    md:a=>{if(!a)return'The syntax of the command is incorrect.';dir()[a]={};return''},
+    type:a=>{const d=dir(),k=a&&find(d,a);return k&&typeof d[k]==='string'?d[k]:'The system cannot find the file specified.'},
+    del:a=>{const d=dir(),k=a&&find(d,a);if(!k)return'Could Not Find '+P()+'\\'+a;delete d[k];return''},
+    echo:a=>{const m=a.match(/^(.*?)\s*>\s*(\S+)$/);if(m){dir()[m[2]]=m[1];return''}return a||'ECHO is on.'},
+    cls:()=>{out.textContent='';return''},
+    date:()=>'The current date is: '+new Date().toLocaleDateString(),
+    time:()=>'The current time is: '+new Date().toLocaleTimeString(),
+    ver:()=>'Windowz XP [Version 5.1.2600]',
+    whoami:()=>'xp-pc\\administrator',hostname:()=>'XP-PC',
+    ipconfig:()=>'Windows IP Configuration\n\nEthernet adapter Local Area Connection:\n\n   IP Address. . . . : 192.168.1.100\n   Subnet Mask . . . : 255.255.255.0\n   Default Gateway . : 192.168.1.1',
+    ping:a=>{if(!a)return'Usage: ping host';const ms=()=>8+Math.random()*30|0;return`Pinging ${a} with 32 bytes of data:\n\n`+[0,1,2,3].map(()=>`Reply from ${a}: bytes=32 time=${ms()}ms TTL=117`).join('\n')},
+    tasklist:()=>Object.entries(wins).map(([k,v])=>k.padEnd(12)+v.el.querySelector('.t').textContent).join('\n'),
+    taskkill:a=>{const k=a.replace(/\/im\s*/i,'').replace(/\.exe$/i,'').toLowerCase();if(wins[k]&&!k.startsWith('dlg')){closeWin(k);return`SUCCESS: Sent termination signal to "${k}".`}return`ERROR: The process "${a}" not found.`},
+    color:a=>{if(!/^[0-9a-f]{2}$/i.test(a||''))return'Usage: color bf  (background digit, then text digit: 0-9, a-f)';c.style.background=pal[parseInt(a[0],16)];c.style.color=pal[parseInt(a[1],16)];return''},
+    start:a=>apps[a]?(openApp(apps[a]),''):'Windows cannot find '+a,
+    shutdown:()=>{shutdown('Windows is shutting down...');return''},
+    exit:()=>{closeWin(id);return''}
+  };
+  w('Windowz XP [Version 5.1.2600]\n(C) Copyright 1985-2001 /R00T.\n');upd();
+  inp.onkeydown=e=>{
+    if(e.key==='ArrowUp'&&hist.length){hi=Math.max(0,hi-1);inp.value=hist[hi]}
+    if(e.key==='ArrowDown'){hi=Math.min(hist.length,hi+1);inp.value=hist[hi]||''}
+    if(e.key!=='Enter')return;
+    const line=inp.value.trim();w(P()+'>'+inp.value);inp.value='';if(!line)return;hist.push(line);hi=hist.length;
+    const[cmd,...r]=line.split(/\s+/),a=r.join(' '),k=cmd.toLowerCase();
+    const res=CMDS[k]?CMDS[k](a):apps[k]?(openApp(apps[k]),''):`'${cmd}' is not recognized as an internal or external command,\noperable program or batch file.`;
+    if(res)w(res);w('');if(wins[id]){c.scrollTop=c.scrollHeight;upd()}};
+  c.onclick=()=>{if(!getSelection().toString())inp.focus()};inp.focus();
+},
+
+taskmgr(b,id){
+  b.innerHTML=`<div class="menu"><span>File</span><span>Options</span><span>View</span><span>Help</span></div><div class="tm"><div class="list"></div><div style="padding:0 6px 6px;display:flex;gap:6px;justify-content:flex-end"><button class="btn" data-a="sw">Switch To</button><button class="btn" data-a="end">End Task</button></div><div class="sb"></div></div>`;
+  const L=b.querySelector('.list'),sb=b.querySelector('.sb');let sel=null,last='';
+  const rf=()=>{if(!wins[id])return clearInterval(iv);
+    const h=Object.entries(wins).filter(([k])=>k!==id&&!k.startsWith('dlg')).map(([k,w])=>`<div data-id="${k}" class="${k===sel?'s':''}"><span>${w.el.querySelector('.t').textContent}</span><span>${w.el.classList.contains('min')?'Minimized':'Running'}</span></div>`).join('');
+    if(h!==last){L.innerHTML=`<div class="hd"><span>Task</span><span>Status</span></div>`+h;last=h}
+    sb.textContent=`Processes: ${Object.keys(wins).length}   CPU: ${2+Math.random()*8|0}%   Mem: ${180+Object.keys(wins).length*12} MB`};
+  const iv=setInterval(rf,1000);
+  L.onclick=e=>{const r=e.target.closest('[data-id]');sel=r?r.dataset.id:null;rf()};
+  b.onclick=e=>{const a=e.target.dataset.a;if(!sel||!wins[sel])return;if(a==='end'){closeWin(sel);sel=null}if(a==='sw')restore(sel);rf()};
+  rf();
+},
+
+ie(b,id){
+  const home=`<body style="font:14px Tahoma;margin:30px;background:linear-gradient(#fff,#dce8fb)"><h1 style="color:#215dc6">Welcome to Internet Explorer</h1><p>Type an address above and press Go.</p><p style="color:#666">Many sites refuse to load inside frames. Try wikipedia.org, example.com or openstreetmap.org.</p></body>`;
+  b.innerHTML=`<div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Help</span></div><div class="ie"><div class="addr2"><button class="btn" data-a="b" style="min-width:30px">◀</button><button class="btn" data-a="f" style="min-width:30px">▶</button><button class="btn" data-a="h" style="min-width:30px">🏠</button><span>Address</span><input value="about:home"><button class="btn" data-a="g" style="min-width:40px">Go</button></div><iframe></iframe><div class="sb">Done</div></div>`;
+  const f=b.querySelector('iframe'),ad=b.querySelector('input');let st=['about:home'],p=0;
+  const show=()=>{const u=st[p];ad.value=u;if(u==='about:home')f.srcdoc=home;else{f.removeAttribute('srcdoc');f.src=u}};
+  const go=u=>{u=u.trim();if(!u)return;if(u!=='about:home'&&!/^https?:\/\//.test(u))u='https://'+u;st=st.slice(0,p+1);st.push(u);p++;show()};
+  b.querySelector('.addr2').onclick=e=>{const a=e.target.dataset.a;if(a==='b'&&p>0){p--;show()}if(a==='f'&&p<st.length-1){p++;show()}if(a==='h')go('about:home');if(a==='g')go(ad.value)};
+  ad.onkeydown=e=>{if(e.key==='Enter')go(ad.value)};show();
+},
+
+display(b,id){
+  const W={'Default (wallpaper.jpg)':'#3a6ea5 url(wallpaper.jpg) center/cover no-repeat','Green hills':'linear-gradient(#4a8fe0 0,#8cc4f5 55%,#5aa832 56%,#3d8a1e 100%)','Autumn':'linear-gradient(#e8a33c,#7a2e0e)','Solid blue':'#3a6ea5','Black':'#000'};
+  b.innerHTML=`<div class="dlg" style="flex-direction:column;align-items:stretch"><strong>Desktop background</strong><select size="5" style="height:100px">${Object.keys(W).map((k,i)=>`<option ${i?'':'selected'}>${k}</option>`).join('')}</select></div><div style="text-align:right;padding:0 12px 10px"><button class="btn" data-a="a">Apply</button> <button class="btn" data-a="c">Close</button></div>`;
+  const s=b.querySelector('select');
+  b.onclick=e=>{const a=e.target.dataset.a;if(a==='a')document.body.style.background=W[s.value];if(a==='c')closeWin(id)};
+}
+};
+const ctx=document.createElement('div');ctx.id='ctx';document.body.append(ctx);
+ctx.innerHTML='<div data-a="refresh">Refresh</div><hr><div data-a="cmd">Open Command Prompt</div><div data-a="taskmgr">Task Manager</div><div data-a="display">Properties</div>';
+document.oncontextmenu=e=>{e.preventDefault();if(e.target.id==='desk'){ctx.style.cssText=`display:block;left:${Math.min(e.clientX,innerWidth-175)}px;top:${Math.min(e.clientY,innerHeight-130)}px`}else ctx.style.display='none'};
+document.addEventListener('click',()=>ctx.style.display='none');
+ctx.onclick=e=>{const a=e.target.dataset.a;if(a==='refresh'){$('#desk').style.visibility='hidden';setTimeout(()=>$('#desk').style.visibility='',120)}else if(a)openApp(a)};
+openApp('about');
+</script>
+</body>
+</html>
